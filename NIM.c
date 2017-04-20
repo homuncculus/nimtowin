@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define SIZE 3
+#define SIZE 5
 #define COM "YODA"
 
 typedef struct a{
