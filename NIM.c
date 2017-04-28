@@ -1,27 +1,32 @@
 #include <stdio.h>
-#define SIZE 5
-#define COM "YODA"
+#include <stdlib.h>
+#include <stdbool.h>
 
-typedef struct a{
-  int val;
-  char pile;
+#define YODA 1
+#define HOOMAN 2
+
+typedef struct m
+{
+    int p_index;
+    int stones_R;
 }move;
 
-void input(move tile[])
+void showStatus (int piles[], int n)
 {
-  for (size_t i = 0; i < SIZE; i++)
-  {
-    tile[i].val=i+3;
-    tile[i].pile=i+65;
-  }
+    int i;
+    printf ("Current Game Status -> ");
+    for (i=0; i<n; i++)
+        printf ("%c-->%d\t",65+i,piles[i]);
+    printf("\n");
+    return;
 }
 
-int XOR(move tile[])
+int XOR(int tile[],int n)
 {
-  int diff=0;
-  for (size_t i = 0; i < SIZE; i++) {
-    diff=diff^tile[i].val;
-  }
+  int i,diff=tile[0];
+  
+  for ( i = 1; i < n; i++)     diff=diff ^ tile[i];
+  
   return diff;
 }
 
