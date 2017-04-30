@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define ERROR "WORNG INPUT BITCH....TRY AGAIN"
 #define YODA 1
 #define HOOMAN 2
 
@@ -53,6 +54,7 @@ void human_move(int tile[],int n,move *moves)
 {
   int i;
 
+  while(1){
   printf("Select non-zero stack to remove from: ");
   scanf("%d",&((*moves).p_index));
 
@@ -63,8 +65,20 @@ void human_move(int tile[],int n,move *moves)
         printf("Stones to remove (1-%d): ",tile[(*moves).p_index]);
         scanf("%d",&((*moves).stones_R));
 
-        if(((*moves).stones_R<=tile[(*moves).p_index]) && (*moves).stones_R>0)
+        if(((*moves).stones_R<=tile[(*moves).p_index]) && (*moves).stones_R>0){
             tile[(*moves).p_index]-=(*moves).stones_R;
+            return;}
+
+        else {
+            printf("%s\n",ERROR);
+            continue;
+        }
+  }
+  else
+  {
+       printf("%s\n",ERROR);
+        continue;
+  }
   }
 }
 
@@ -142,6 +156,6 @@ void play_game(int tile[], int n, int Turn)
 }
 
 int main(){
-  int tile[]={3,4,5};
+  int tile[]={rand()%8,rand()%8,rand()%8};
   play_game(tile,3,1);
 }
