@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <time.h>
+#include <time.h> //used to create Random function
 
-#define ERROR "WRONG INPUT BITCH....TRY AGAIN"
-#define YODA 1
-#define HOOMAN 2
+#define ERROR "WRONG INPUT BITCH....TRY AGAIN" // random shit
+#define YODA 1   //COMPUTER "COOL RIGHT?"
+#define HOOMAN 2 //USER
 
-typedef struct m
+typedef struct m //needed data-structure
 {
-    int p_index;
-    int stones_R;
+    int p_index; //index of the pile to remove from
+    int stones_R;//no. of stones to be removed
 }move;
 
 int Rand() {
@@ -27,7 +27,7 @@ int Rand() {
 
     return (t*10+o);
 }
-void showStatus (int tile[], int n)
+void showStatus (int tile[], int n) // printing current game conditions
 {
     int i;
     printf ("Current Game Status -> ");
@@ -37,17 +37,17 @@ void showStatus (int tile[], int n)
     return;
 }
 
-bool gameOver(int tile[], int n)
+bool gameOver(int tile[], int n) //returns true if there is no stone left
 {
     int i;
     for (i=0; i<n; i++)
-        if (tile[i]!=0)
+        if (tile[i]!=0) //returns false if a stack is nonzero
             return (false);
 
     return (true);
 }
 
-int XOR(int tile[],int n)
+int XOR(int tile[],int n) // xor operator ^ used for all stacks
 {
   int i,diff=tile[0];
 
@@ -65,11 +65,11 @@ void declareWinner(int Turn)
     return;
 }
 
-void human_move(int tile[],int n,move *moves)
+void human_move(int tile[],int n,move *moves) //taking input from user to make their move
 {
   int i;
 
-  while(1){
+  while(1){ //loop until acceptable values are entered
   printf("Select non-zero stack to remove from: ");
   scanf("%d",&((*moves).p_index));
 
@@ -82,7 +82,7 @@ void human_move(int tile[],int n,move *moves)
 
         if(((*moves).stones_R<=tile[(*moves).p_index]) && (*moves).stones_R>0){
             tile[(*moves).p_index]-=(*moves).stones_R;
-            return;}
+            return;} // return once stone is removed;
 
         else {
             printf("%s\n",ERROR);
@@ -97,17 +97,20 @@ void human_move(int tile[],int n,move *moves)
   }
 }
 
-void perfect_move(int tile[],int n,move *moves)
+void perfect_move(int tile[],int n,move *moves) //actual algo used here
 {
-  int i,pop=XOR(tile,n);
+  int i,pop=XOR(tile,n); // pop stores the value of xor of all stacks
 
-  if (pop != 0)
-    {
+  if (pop != 0) // if Xor is nonzero
+    {/* xor of pop with each stack is taken and condition
+        is satisfied if it is less than no. of stones in
+         the stack
+       */
+       //moves - new struct variable
         for (i=0; i<n; i++)
         {
-            if ((tile[i] ^ pop) < tile[i])
-            {
-                (*moves).p_index = i;
+            if ((tile[i] ^ pop) < tile[i]) { //phone karlena yaha pohochoge tab
+                (*moves).p_index = i; //stores index of stack whose xor is less than no. of stones
                 (*moves).stones_R =
                                  tile[i]-(tile[i]^pop);
                 tile[i] = (tile[i] ^ pop);
@@ -120,16 +123,21 @@ void perfect_move(int tile[],int n,move *moves)
     {
         int n_index[n],count;
 
+        /* n_index will store the index of nonzero
+        stack and count will count the
+        number of nonzero stacks*/
+
         for (i=0, count=0; i<n; i++)
             if (tile[i] > 0)
                 n_index[count++] = i;
 
-        (*moves).p_index = n_index[(Rand() % (count))];
+        (*moves).p_index = n_index[(Rand() % (count))];//taking a random nonzero index
         (*moves).stones_R =
-                 1 + (Rand() % (tile[(*moves).p_index]));
-        tile[(*moves).p_index] =
-         tile[(*moves).p_index] - (*moves).stones_R;
+                 1 + (Rand() % (tile[(*moves).p_index]));//removing random stones
 
+        /*updating the value of that stack */
+        tile[(*moves).p_index] -= (*moves).stones_R;
+    //all done
     }
 
 }
@@ -137,7 +145,7 @@ void perfect_move(int tile[],int n,move *moves)
 void play_game(int tile[], int n, int Turn)
 {
     printf("\nGAME STARTS\n\n");
-    move moves;
+    move moves; //it will store the values to use in output
 
     while (gameOver(tile, n) == false)
     {
@@ -145,20 +153,25 @@ void play_game(int tile[], int n, int Turn)
 
         if (Turn == YODA)
         {
+            /*NOw computer should make the perfect move*/
+
             perfect_move(tile, n, &moves);
 
             printf("COMPUTER removes %d stones from pile "
                    "at index %c\n", moves.stones_R,
                    moves.p_index+65);
-            Turn = HOOMAN;
+
+            Turn = HOOMAN; //will change the turn for further use
         }
         else
         {
+            /*take input from user to make the move*/
             human_move(tile, n, &moves);
 
             printf("HUMAN removes %d stones from pile at "
                    "index %c\n", moves.stones_R,
                    moves.p_index+65);
+            //change the Turn
             Turn = YODA;
         }
     }
@@ -169,6 +182,11 @@ void play_game(int tile[], int n, int Turn)
 }
 
 int main(){
+ /* the values in tile at certain index defines the
+  stones in that stack so here we gonna take it random*/
   int tile[]={Rand()%8+1,Rand()%7+1,Rand()%6+1};
+/* to play the game we need the stacks,the number of stacks
+  and gonna start with Computer to make the
+  first move,"1" is for that*/
   play_game(tile,3,1);
 }
