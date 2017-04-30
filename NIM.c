@@ -11,12 +11,12 @@ typedef struct m
     int stones_R;
 }move;
 
-void showStatus (int piles[], int n)
+void showStatus (int tile[], int n)
 {
     int i;
     printf ("Current Game Status -> ");
     for (i=0; i<n; i++)
-        printf ("%c-->%d\t",65+i,piles[i]);
+        printf ("%c-->%d\t",65+i,tile[i]);
     printf("\n");
     return;
 }
@@ -34,9 +34,9 @@ bool gameOver(int tile[], int n)
 int XOR(int tile[],int n)
 {
   int i,diff=tile[0];
-  
+
   for ( i = 1; i < n; i++)     diff=diff ^ tile[i];
-  
+
   return diff;
 }
 
@@ -49,10 +49,29 @@ void declareWinner(int Turn)
     return;
 }
 
+void human_move(int tile[],int n,move *moves)
+{
+  int i;
+
+  printf("Select non-zero stack to remove from: ");
+  scanf("%d",&((*moves).p_index));
+
+  (*moves).p_index--;
+
+  if(tile[(*moves).p_index])
+  {
+        printf("Stones to remove (1-%d): ",tile[(*moves).p_index]);
+        scanf("%d",&((*moves).stones_R));
+
+        if(((*moves).stones_R<=tile[(*moves).p_index]) && (*moves).stones_R>0)
+            tile[(*moves).p_index]-=(*moves).stones_R;
+  }
+}
+
 void perfect_move(int tile[],int n,move *moves)
 {
   int i,pop=XOR(tile,n);
-  
+
   if (pop != 0)
     {
         for (i=0; i<n; i++)
@@ -67,7 +86,7 @@ void perfect_move(int tile[],int n,move *moves)
             }
         }
     }
-    
+
     else
     {
         int n_index[n],count;
@@ -76,7 +95,7 @@ void perfect_move(int tile[],int n,move *moves)
             if (tile[i] > 0)
                 n_index[count++] = i;
 
-        (*moves).p_index = (rand() % (count));
+        (*moves).p_index = n_index[(rand() % (count))];
         (*moves).stones_R =
                  1 + (rand() % (tile[(*moves).p_index]));
         tile[(*moves).p_index] =
@@ -97,10 +116,10 @@ void play_game(int tile[], int n, int Turn)
     {
         showStatus(tile, n);
 
-        perfect_move(tile, n, &moves);
-
         if (Turn == YODA)
         {
+            perfect_move(tile, n, &moves);
+
             printf("COMPUTER removes %d stones from pile "
                    "at index %d\n", moves.stones_R,
                    moves.p_index);
@@ -108,6 +127,8 @@ void play_game(int tile[], int n, int Turn)
         }
         else
         {
+            human_move(tile, n, &moves);
+
             printf("HUMAN removes %d stones from pile at "
                    "index %d\n", moves.stones_R,
                    moves.p_index);
