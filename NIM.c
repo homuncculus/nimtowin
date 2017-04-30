@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
-#define ERROR "WORNG INPUT BITCH....TRY AGAIN"
+#define ERROR "WRONG INPUT BITCH....TRY AGAIN"
 #define YODA 1
 #define HOOMAN 2
 
@@ -12,6 +13,20 @@ typedef struct m
     int stones_R;
 }move;
 
+int Rand() {
+
+    time_t current_time;
+    char* c_time_string;
+
+    current_time = time(NULL);
+
+    /* Convert to local time format. */
+    c_time_string = ctime(&current_time);
+
+    int t=(int)c_time_string[17]-48,o=(int)c_time_string[18]-48;
+
+    return (t*10+o);
+}
 void showStatus (int tile[], int n)
 {
     int i;
@@ -109,14 +124,12 @@ void perfect_move(int tile[],int n,move *moves)
             if (tile[i] > 0)
                 n_index[count++] = i;
 
-        (*moves).p_index = n_index[(rand() % (count))];
+        (*moves).p_index = n_index[(Rand() % (count))];
         (*moves).stones_R =
-                 1 + (rand() % (tile[(*moves).p_index]));
+                 1 + (Rand() % (tile[(*moves).p_index]));
         tile[(*moves).p_index] =
          tile[(*moves).p_index] - (*moves).stones_R;
 
-        if (tile[(*moves).p_index] < 0)
-            tile[(*moves).p_index]=0;
     }
 
 }
@@ -135,8 +148,8 @@ void play_game(int tile[], int n, int Turn)
             perfect_move(tile, n, &moves);
 
             printf("COMPUTER removes %d stones from pile "
-                   "at index %d\n", moves.stones_R,
-                   moves.p_index);
+                   "at index %c\n", moves.stones_R,
+                   moves.p_index+65);
             Turn = HOOMAN;
         }
         else
@@ -144,8 +157,8 @@ void play_game(int tile[], int n, int Turn)
             human_move(tile, n, &moves);
 
             printf("HUMAN removes %d stones from pile at "
-                   "index %d\n", moves.stones_R,
-                   moves.p_index);
+                   "index %c\n", moves.stones_R,
+                   moves.p_index+65);
             Turn = YODA;
         }
     }
@@ -156,6 +169,6 @@ void play_game(int tile[], int n, int Turn)
 }
 
 int main(){
-  int tile[]={rand()%8,rand()%8,rand()%8};
+  int tile[]={Rand()%8+1,Rand()%7+1,Rand()%6+1};
   play_game(tile,3,1);
 }
