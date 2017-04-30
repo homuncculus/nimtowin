@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include <time.h> //used to create Random function
 
@@ -13,6 +14,7 @@ typedef struct m //needed data-structure
     int stones_R;//no. of stones to be removed
 }move;
 
+char *PLAYER1,*PLAYER2;
 int Rand() {
 
     time_t current_time;
@@ -58,10 +60,10 @@ int XOR(int tile[],int n) // xor operator ^ used for all stacks
 
 void declareWinner(int Turn)
 {
-    if (Turn == YODA)
-        printf ("\nHOOMAN won\n\n");
+    if (Turn == 1)
+        printf ("\n%s won\n\n",PLAYER2);
     else
-        printf("\nYODA won\n\n");
+        printf("\n%s won\n\n",PLAYER1);
     return;
 }
 
@@ -142,51 +144,120 @@ void perfect_move(int tile[],int n,move *moves) //actual algo used here
 
 }
 
-void play_game(int tile[], int n, int Turn)
+void play_game(int tile[], int n, int Turn,int players)
 {
     printf("\nGAME STARTS\n\n");
     move moves; //it will store the values to use in output
 
+    if(players==1)
+    {
+        PLAYER1=(char*)malloc(5);
+        strcpy(PLAYER1,"YODA");
+        char t[15];
+        printf("PLEASE ENTER USERNAME : ");
+        scanf("%s",t);
+        PLAYER2=(char*)malloc(strlen(t));
+        strcpy(PLAYER2,t);
     while (gameOver(tile, n) == false)
     {
         showStatus(tile, n);
 
-        if (Turn == YODA)
+        if (Turn == 1)
         {
             /*NOw computer should make the perfect move*/
 
             perfect_move(tile, n, &moves);
 
-            printf("COMPUTER removes %d stones from pile "
-                   "at index %c\n", moves.stones_R,
+            printf("%s removes %d stones from pile "
+                   "at index %c\n",PLAYER1, moves.stones_R,
                    moves.p_index+65);
 
-            Turn = HOOMAN; //will change the turn for further use
+            Turn = 2; //will change the turn for further use
         }
         else
         {
             /*take input from user to make the move*/
             human_move(tile, n, &moves);
 
-            printf("HUMAN removes %d stones from pile at "
-                   "index %c\n", moves.stones_R,
+            printf("%s removes %d stones from pile at "
+                   "index %c\n",PLAYER2,moves.stones_R,
                    moves.p_index+65);
             //change the Turn
-            Turn = YODA;
+            Turn = 1;
         }
     }
+    }
+    else
+    {
+        char t[15];
+        printf("enter player1 username: ");
+        scanf("%s",t);
+        PLAYER1=(char*)malloc(strlen(t));
+        strcpy(PLAYER1,t);
+        printf("enter player2 username: ");
+        scanf("%s",t);
+        PLAYER2=(char*)malloc(strlen(t));
+        strcpy(PLAYER2,t);
 
+       while (gameOver(tile, n) == false)
+    {
+        showStatus(tile, n);
+
+        if (Turn == 1)
+        {
+            human_move(tile, n, &moves);
+
+            printf("%s removes %d stones from pile "
+                   "at index %c\n",PLAYER1, moves.stones_R,
+                   moves.p_index+65);
+
+            Turn = 2; //will change the turn for further use
+        }
+        else
+        {
+            /*take input from user to make the move*/
+            human_move(tile, n, &moves);
+
+            printf("%s removes %d stones from pile at "
+                   "index %c\n",PLAYER2, moves.stones_R,
+                   moves.p_index+65);
+            //change the Turn
+            Turn = 1;
+        }
+    }
+    }
     showStatus(tile, n);
     declareWinner(Turn);
     return;
 }
 
 int main(){
- /* the values in tile at certain index defines the
-  stones in that stack so here we gonna take it random*/
-  int tile[]={Rand()%8+1,Rand()%7+1,Rand()%6+1};
-/* to play the game we need the stacks,the number of stacks
+    printf("SINGLE PLAYER OR TWO-PLAYER?(1-2)");
+    int fl;
+    scanf("%d",&fl);
+    printf("HOW MANY STACK WOULD YOU PREFER?\n");
+    printf("\t3\t5\t7\nYour choice?: ");
+    int flag,n,*tile;
+    while(1){
+    scanf("%d",&flag);
+    switch(flag)
+    {
+        case 3: tile=(int*)calloc(3,sizeof(int));
+                for(n=0;n<3;n++) tile[n]=Rand()%(8+n)+1;
+                break;
+        case 5: tile=(int*)calloc(3,sizeof(int));
+                for(n=0;n<5;n++) tile[n]=Rand()%(8+n)+1;
+                break;
+        case 7: tile=(int*)calloc(3,sizeof(int));
+                for(n=0;n<7;n++) tile[n]=Rand()%(8+n)+1;
+                break;
+        default:printf("%s",ERROR);
+                continue;
+    };
+    break;
+    }
+  /* to play the game we need the stacks,the number of stacks
   and gonna start with Computer to make the
   first move,"1" is for that*/
-  play_game(tile,3,1);
+  play_game(tile,n,1,fl);
 }
