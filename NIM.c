@@ -42,7 +42,7 @@ void nim(){
 	int choice;
    do {
        choice=printHomeMenu();
-       
+
         switch(choice) {
            case 1:
                jarvis_game();
@@ -59,7 +59,7 @@ void nim(){
            default:
                printf(ERROR);
        }
-       if(choice != 4) 
+       if(choice != 4)
            system("clear");
    } while(choice != 4);
 }
@@ -84,21 +84,21 @@ void showStatus (int tile[], int MAX) // printing current game conditions
     printf("\n\n\t*******************************************************");
     printf("\n\t*\t~@~   N:I:M  G:A:M:E  I:S  O:N:!   ~@~        *\n");
     printf("\t*******************************************************\n");
-    
+
     for (i=0; i<MAX; i++){
         printf ("\tRow %c  ",65+i);
         int j;
         for(j=0;j<tile[i];j++){
         	printf("\t+-+");
-        }	
+        }
 		printf ("\n\t-----");
 		for(j=0;j<tile[i];j++)
         	printf("\t|_|");
 		printf("\n");
 	}
-    printf("\n\t\t*******************************************************");
+    printf("\n\t*******************************************************");
     printf("\n");
-    printf("\t\t*******************************************************\n");
+    printf("\t*******************************************************\n");
 }
 
 bool gameOver(int tile[], int n) //returns true if there is no stone left
@@ -152,7 +152,7 @@ void declareWinner(int Turn)
     if (Turn == 1){
 		winner=(char*)malloc(strlen(PLAYER2));
         strcpy(winner,PLAYER2);}
-    
+
     else{
 		winner=(char*)malloc(strlen(PLAYER1));
         strcpy(winner,PLAYER1);}
@@ -208,14 +208,14 @@ void human_move(int tile[],int n,move *moves,int Turn) //taking input from user 
 	tm.tv_nsec=0;
   while(1){ //loop until acceptable values are entered
   printf("Select non-zero stack to remove from: ");
-  fflush(stdin);
+  //fflush(stdin);
   char c;
   fflush(stdin);
   scanf("%c",&c);
   c=toupper(c);
   if(c>='A' && c<='Z')
   (*moves).p_index=c-65;
-  
+
   else {
 	  printf(ERROR);
 	  continue;}
@@ -230,18 +230,18 @@ void human_move(int tile[],int n,move *moves,int Turn) //taking input from user 
             return;} // return once stone is removed;
 
         else {if((*moves).stones_R == QUIT) {
-				system("clear"); 
+				system("clear");
 				printf("\n\n\n");
                 printf("\n\t\t<<< YOU ENTERED -1 REQUESTING TO QUIT THE GAME,"
                 "\n\t\t\t\t IF YOU QUIT,"
                 "\n\t\t THE OTHER PLAYER WILL BE DECLARED WINNER >>>");
                 printf("\n");
                 nanosleep(&tm,NULL);
-                system("clear");          
+                system("clear");
                 declareWinner(Turn);
                 exit(0);
                 }
-                                
+
             printf(ERROR);
             continue;
         }
@@ -267,7 +267,7 @@ void perfect_move(int tile[],int n,move *moves) //actual algo used here
         for (i=0; i<n; i++)
         {/*I'll prefer to keep this a secret
 			so that you can't win against computer*/
-            if ((tile[i] ^ pop) < tile[i]) { 
+            if ((tile[i] ^ pop) < tile[i]) {
                 (*moves).p_index = i;
                 (*moves).stones_R =
                                  tile[i]-(tile[i]^pop);
@@ -321,15 +321,15 @@ void human_game()
     while(PLAYER2[i]) {
         PLAYER2[i] = toupper(PLAYER2[i]);
         i++;}
-    
+
     int n=row_no(),*tile=NULL;
-    
+
 	tile=(int*)malloc(n*sizeof(int));
-    
+
     for(i=0;i<n;i++) tile[i]=Rand()%(5+i)+1;
-    
+
     int Turn=Rand()%2;
-    
+
        while (gameOver(tile, n) == false)
     {
         showStatus(tile, n);
@@ -380,47 +380,47 @@ void jarvis_game()
     while(PLAYER2[i]) {
         PLAYER2[i] = toupper(PLAYER2[i]);
         i++;}
-    
+
     int n=row_no(),*tile=NULL;
-    
+
     tile=(int*)malloc(n*sizeof(int));
-    
+
     for(i=0;i<n;i++) tile[i]=Rand()%(5+i)+1;
-    
+
     int Turn=Rand()%2;
-	
+
 	if(XOR(tile,n)==0) Turn=2;
-	
+
 	printf("\n\n\t<<< EVERYTHING IS SET FOR THE GAME! ALL THE BEST %s >>>\n", PLAYER2);
     nanosleep(&tm,NULL);
-    
+
     while (gameOver(tile, n) == FALSE)
     {
 		if(Turn == 1){
 		 printf("\n\n\t\t<<< JARVIS HAS DECIDED THE MOVE!>>>"
-		 " \n\t<<< WAIT TO FIND WHAT JARVIS IS GOING TO PLAY! >>>\n");  
+		 " \n\t<<< WAIT TO FIND WHAT JARVIS IS GOING TO PLAY! >>>\n");
 		 nanosleep(&tm,NULL);}
-		 
+
         showStatus(tile, n);
 
         if (Turn == 1)
         {
             /*NOw computer should make the perfect move*/
-			
+
             perfect_move(tile, n, &moves);
 
             printf("%s removes %d stones from pile "
                    "at index %c\n",PLAYER1, moves.stones_R,
                    moves.p_index+65);
             nanosleep(&tm,NULL);
-            
+
             Turn = 2; //will change the turn for further use
         }
         else
         {
 			printf("\n\nIt is your turn %s...\n", PLAYER2);
             /*take input from user to make the move*/
-            human_move(tile, n, &moves, Turn);    
+            human_move(tile, n, &moves, Turn);
             //change the Turn
             Turn = 1;
         }
@@ -429,7 +429,7 @@ void jarvis_game()
     showStatus(tile, n);
     declareWinner(Turn);
 }
-    
+
 
 int printHomeMenu() {
 	system("clear");
@@ -450,12 +450,12 @@ int printHomeMenu() {
 	int choice;
 	printf("\t\tINPUT YOUR CHOICE:");
 	scanf("%d",&choice);
-	 
+
 	return choice;
 }
 
 int row_no(){
-    
+
     printf("HOW MANY STACK WOULD YOU PREFER?\n");
     int flag;
     while(1){
